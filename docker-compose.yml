@@ -54,11 +54,29 @@ services:
       - "./addons:/addons"
       - "./storage:/storage"
 
+      # custom favicons
+      - "./custom/favicon.ico:/frontend/favicon.ico"
+      - "./custom/favicon-16x16.png:/frontend/favicon-16x16.png"
+      - "./custom/favicon-32x32.png:/frontend/favicon-32x32.png"
+      - "./custom/apple-touch-icon.png:/frontend/apple-touch-icon.png"
+
       # comment out the following line on Windows
       - "/etc/localtime:/etc/localtime:ro"
 
       # uncomment the following line if you need to work on the backend code
       # - "./backend:/backend"
+  worker:
+    image: ynput/ayon-ash:latest
+    hostname: worker01
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - server
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - "AYON_API_KEY=57bae03b02974881bde33b500846afac"
+      - "AYON_SERVER_URL=http://192.168.0.24:5000"
 
 volumes:
   db: {}
